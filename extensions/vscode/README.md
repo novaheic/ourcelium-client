@@ -1,54 +1,58 @@
-<div align="center">
+# Ourcelium
 
-![Continue logo](media/readme.png)
+**AI coding at your pace — powered by open models, with zero setup.**
 
-<div align="center">
+Ourcelium is a plug-and-play AI coding assistant. Sign in once and start coding: no API keys to manage, no provider accounts, no configuration files. You get a capable open model in your editor at a fraction of the cost of closed-source assistants.
 
-<a target="_blank" href="https://opensource.org/licenses/Apache-2.0" style="background:none">
-    <img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" style="height: 22px;" />
-</a>
-<a target="_blank" href="https://docs.continue.dev" style="background:none">
-    <img src="https://img.shields.io/badge/Continue-docs-%23BE1B55.svg?logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNiAyNCIgZmlsbD0id2hpdGUiPgogIDxwYXRoIGQ9Ik0yMC41Mjg2IDMuMjY4MTFMMTkuMTUxMiA1LjY1Njk0TDIyLjYzMjggMTEuNjg0OUMyMi42NTgyIDExLjczMDYgMjIuNjczNSAxMS43ODY2IDIyLjY3MzUgMTEuODM3NEMyMi42NzM1IDExLjg4ODIgMjIuNjU4MiAxMS45NDQxIDIyLjYzMjggMTEuOTg5OUwxOS4xNTEyIDE4LjAyMjlMMjAuNTI4NiAyMC40MTE3TDI1LjQ3OTEgMTEuODM3NEwyMC41Mjg2IDMuMjYzMDNWMy4yNjgxMVpNMTguNjE3NiA1LjM0NjlMMTkuOTk1IDIuOTU4MDdIMTcuMjQwMkwxNS44NjI4IDUuMzQ2OUgxOC42MjI3SDE4LjYxNzZaTTE1Ljg1NzcgNS45NjY5N0wxOS4wNzUgMTEuNTMyNEgyMS44Mjk4TDE4LjYxNzYgNS45NjY5N0gxNS44NTc3Wk0xOC42MTc2IDE3LjcxNzlMMjEuODI5OCAxMi4xNDc0SDE5LjA3NUwxNS44NTc3IDE3LjcxNzlIMTguNjE3NlpNMTUuODU3NyAxOC4zMzhMMTcuMjM1MSAyMC43MTY3SDE5Ljk4OTlMMTguNjEyNSAxOC4zMzhIMTUuODUyNkgxNS44NTc3Wk02LjUyMDk4IDIxLjMwNjNDNi40NjUwNyAyMS4zMDYzIDYuNDE0MjQgMjEuMjkxIDYuMzY4NSAyMS4yNjU2QzYuMzIyNzYgMjEuMjQwMiA2LjI4MjA5IDIxLjE5OTUgNi4yNTY2OCAyMS4xNTM4TDIuNzcwMDIgMTUuMTIwN0gwLjAxNTI0ODJMNC45NjU3IDIzLjY5SDE0Ljg2MTVMMTMuNDg0MSAyMS4zMDYzSDYuNTI2MDZINi41MjA5OFpNMTQuMDE3OCAyMC45OTYyTDE1LjM5NTIgMjMuMzhMMTYuNzcyNiAyMC45OTExTDE1LjM5NTIgMTguNjAyM0wxNC4wMTc4IDIwLjk5MTFWMjAuOTk2MlpNMTQuODYxNSAxOC4yOTc0SDguNDM3MTJMNy4wNTk3MyAyMC42ODYySDEzLjQ4NDFMMTQuODYxNSAxOC4yOTc0Wk03Ljg5ODM2IDE3Ljk5MjRMNC42ODEwOCAxMi40MjE5TDMuMzAzNjkgMTQuODEwN0w2LjUyMDk4IDIwLjM4MTJMNy44OTgzNiAxNy45OTI0Wk0wLjAxMDE2NTQgMTQuNTAwN0gyLjc2NDk0TDQuMTQyMzIgMTIuMTExOEgxLjM5MjYzTDAuMDEwMTY1NCAxNC41MDA3Wk02LjI0MTQzIDIuNTQxM0M2LjI2Njg1IDIuNDk1NTYgNi4zMDc1MSAyLjQ1NDkgNi4zNTMyNSAyLjQyOTQ4QzYuMzk5IDIuNDA0MDcgNi40NTQ5IDIuMzg4ODIgNi41MDU3MyAyLjM4ODgySDEzLjQ3NEwxNC44NTE0IDBINC45NTA0NUwwIDguNTc0MzVIMi43NTQ3N0w2LjIzMTI3IDIuNTQ2MzhMNi4yNDE0MyAyLjU0MTNaTTQuMTQyMzIgMTEuNTc4MkwyLjc2NDk0IDkuMTg5MzRIMC4wMTAxNjU0TDEuMzg3NTUgMTEuNTc4Mkg0LjE0MjMyWk02LjUxMDgxIDMuMzEzODZMMy4yOTg2MSA4Ljg3OTNMNC42NzU5OSAxMS4yNjgxTDcuODg4MiA1LjcwMjY4TDYuNTEwODEgMy4zMTM4NlpNMTMuNDc5MSAzLjAwMzgySDcuMDQ0NDhMOC40MjE4NyA1LjM5MjY0SDE0Ljg1NjRMMTMuNDc5MSAzLjAwMzgyWk0xNS4zOTUyIDUuMDgyNkwxNi43Njc1IDIuNjk4ODZMMTUuMzk1MiAwLjMxMDAzOEwxNC4wMTc4IDIuNjkzNzhMMTUuMzk1MiA1LjA4MjZaIi8+Cjwvc3ZnPg==" style="height: 22px;" />
-</a>
+## Why Ourcelium?
 
-<p></p>
+Most ways of coding with open models are bring-your-own-API: sign up with a provider, generate a key, paste it into a config, pick a model, tune the settings. Ourcelium removes all of that. Click **Sign in**, authenticate in your browser, and you're coding — the free tier doesn't even ask for a credit card.
 
-</div>
+- **Zero setup** — sign in with GitHub, Google, or email and everything is configured automatically
+- **Open models** — currently Qwen3 235B, one of the strongest open-weight coding models available
+- **Honest pricing** — a generous free tier, and a flat $10/month when you need more
+- **A great fallback** — out of usage on your primary assistant mid-task? Ourcelium is a cheap, capable second lane that's always ready
 
-<h1 align="center">Continue</h1>
+## Features
 
-<div align="center">
+- **Agent** — hand over a task and let the model work across your codebase with tools: reading files, editing code, and running terminal commands with your permission
+- **Chat** — ask questions about your code in a sidebar chat, with `@`-mentions to bring files and context into the conversation
+- **Edit** — select code, describe the change, and review the diff inline without leaving your file
+- **CLI** — prefer the terminal? The same assistant is available as the `ourcelium` command-line tool, sharing one sign-in with the extension
 
-**[Source-controlled AI checks, enforceable in CI](https://docs.continue.dev)**
+## Pricing
 
-</div>
+|                   | Free        | Pro           |
+| ----------------- | ----------- | ------------- |
+| Price             | $0, forever | $10/month     |
+| Tokens            | 2M / month  | 25M / month   |
+| Model access      | Full        | Full          |
+| Extra token packs | —           | From $5 / 10M |
 
-## VS Code Agent
+Manage your plan and track usage anytime at [ourcelium.dev/dashboard](https://ourcelium.dev/dashboard).
 
-[Agent](https://docs.continue.dev/ide-extensions/agent/quick-start) to work on development tasks together with AI
+## Our vision
 
-![agent](docs/images/agent.gif)
+Today, AI coding runs almost entirely on closed models in hyperscale data centers. We think there should be a serious alternative: open models, transparent pricing, and — over time — an open network of independent compute providers rather than a single centralized operator. Ourcelium starts simple, with one excellent open model that anyone can use in seconds, and grows from there: more models, smarter routing, and a progressively more open infrastructure underneath.
 
-## VS Code Chat
+Using Ourcelium today is the most direct way to support that direction.
 
-[Chat](https://docs.continue.dev/ide-extensions/chat/quick-start) to ask general questions and clarify code sections
+## Getting started
 
-![chat](docs/images/chat.gif)
+1. Install the extension
+2. Open the Ourcelium sidebar and click **Sign in**
+3. Authenticate in your browser — you'll be dropped right back into your editor
+4. Start coding
 
-## VS Code Edit
+That's the whole setup.
 
-[Edit](https://docs.continue.dev/ide-extensions/edit/quick-start) to modify a code section without leaving your current file
+## Links
 
-![edit](docs/images/edit.gif)
-
-## VS Code Autocomplete
-
-[Autocomplete](https://docs.continue.dev/ide-extensions/autocomplete/quick-start) to receive inline code suggestions as you type
-
-![autocomplete](docs/images/autocomplete.gif)
-
-</div>
+- Website: [ourcelium.dev](https://ourcelium.dev)
+- Dashboard: [ourcelium.dev/dashboard](https://ourcelium.dev/dashboard)
+- Privacy policy: [ourcelium.dev/privacy](https://ourcelium.dev/privacy)
+- Terms: [ourcelium.dev/terms](https://ourcelium.dev/terms)
 
 ## License
 
-[Apache 2.0 © 2023-2025 Continue Dev, Inc.](./LICENSE)
+[Apache 2.0](./LICENSE) — Ourcelium is a fork of [Continue](https://github.com/continuedev/continue), building on its excellent open-source foundation.

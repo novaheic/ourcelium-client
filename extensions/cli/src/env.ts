@@ -8,5 +8,5 @@ dotenv.config();
 export const env = {
   apiBase: process.env.CONTINUE_API_BASE ?? "https://api.continue.dev/",
   continueHome:
-    process.env.CONTINUE_GLOBAL_DIR || path.join(os.homedir(), ".continue"),
+    process.env.CONTINUE_GLOBAL_DIR || path.join(os.homedir(), ".ourcelium"),
 };

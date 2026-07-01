@@ -1,12 +1,13 @@
 {
-  "name": "@continuedev/cli",
+  "name": "@ourcelium/cli",
   "version": "0.0.0-dev",
-  "description": "Continue CLI",
+  "description": "Ourcelium CLI",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
   "bin": {
-    "cn": "dist/cn.js"
+    "ourcelium": "dist/cn.js",
+    "ourc": "dist/cn.js"
   },
   "scripts": {
     "test": "vitest run",

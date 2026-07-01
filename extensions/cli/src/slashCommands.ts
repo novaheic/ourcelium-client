@@ -254,8 +254,119 @@ function handleImport(args: string[]): SlashCommandResult {
   }
 }
 
+async function handleLogin(): Promise<SlashCommandResult> {
+  const { isSignedIn, runLoginFlow } = await import("./auth/ourceliumAuth.js");
+
+  if (isSignedIn()) {
+    return {
+      output: chalk.yellow(
+        "Already logged in — use /logout first to switch accounts.",
+      ),
+    };
+  }
+
+  try {
+    await runLoginFlow();
+    return {
+      output: chalk.green("Logged in. Start coding!"),
+    };
+  } catch (error: any) {
+    return {
+      output: chalk.red(`Sign-in failed: ${error.message}`),
+    };
+  }
+}
+
+async function handleLogout(): Promise<SlashCommandResult> {
+  const { logOut } = await import("./auth/ourceliumAuth.js");
+  logOut();
+  return {
+    output:
+      chalk.green("Logged out.") + chalk.gray(" Use /login to sign in again."),
+  };
+}
+
+async function handleUsage(): Promise<SlashCommandResult> {
+  const { getStoredApiKey, GATEWAY_URL } = await import(
+    "./auth/ourceliumAuth.js"
+  );
+
+  const apiKey = getStoredApiKey();
+  if (!apiKey) {
+    return { output: chalk.yellow("Not logged in — run /login first.") };
+  }
+
+  try {
+    const res = await fetch(`${GATEWAY_URL}/v1/usage`, {
+      headers: { Authorization: `Bearer ${apiKey}` },
+    });
+
+    if (res.status === 401) {
+      return {
+        output: chalk.yellow(
+          "Your API key is no longer valid — run /login to sign in again.",
+        ),
+      };
+    }
+    if (!res.ok) {
+      return {
+        output: chalk.red(`Failed to fetch usage (HTTP ${res.status}).`),
+      };
+    }
+
+    const usage = (await res.json()) as {
+      used_tokens: number;
+      cap: number;
+      credits_tokens: number;
+      reset_at: string;
+      tier: "free" | "paid";
+      at_warning: boolean;
+    };
+
+    const usedM = (usage.used_tokens / 1_000_000).toFixed(2);
+    const capM = (usage.cap / 1_000_000).toFixed(0);
+    const pct = Math.min((usage.used_tokens / usage.cap) * 100, 100).toFixed(1);
+    const resetDate = new Date(usage.reset_at).toLocaleDateString(undefined, {
+      month: "short",
+      day: "numeric",
+    });
+
+    const lines = [
+      chalk.bold("Token usage"),
+      `  ${chalk.cyan(`${usedM}M`)} of ${capM}M used (${pct}%)`,
+      `  Tier: ${usage.tier === "paid" ? chalk.yellow("Pro") : "Free"}`,
+      `  Resets: ${resetDate}`,
+    ];
+    if (usage.credits_tokens > 0) {
+      lines.push(
+        `  Extra credits: ${(usage.credits_tokens / 1_000_000).toFixed(1)}M tokens`,
+      );
+    }
+    if (usage.at_warning) {
+      lines.push(
+        chalk.yellow(
+          usage.tier === "free"
+            ? "  ⚠ You've used over 80% of your free monthly tokens — upgrade at https://ourcelium.dev/dashboard"
+            : "  ⚠ You've used over 80% of your monthly tokens — top up at https://ourcelium.dev/dashboard",
+        ),
+      );
+    }
+
+    return { output: lines.join("\n") };
+  } catch {
+    return {
+      output: chalk.red(
+        "Could not reach the Ourcelium gateway — check your connection.",
+      ),
+    };
+  }
+}
+
 const commandHandlers: Record<string, CommandHandler> = {
   help: handleHelp,
+  login: () => handleLogin(),
+  logout: () => handleLogout(),
+  usage: () => handleUsage(),
   clear: () => {
     return { clear: true, output: "Chat history cleared" };
   },

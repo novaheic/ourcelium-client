@@ -29,7 +29,7 @@ export const THEME_COLORS = {
   },
   "primary-background": {
     vars: ["--vscode-button-background"],
-    default: "#2c5aa0", // medium blue
+    default: "#ff0099", // neon pink
   },
   "primary-foreground": {
     vars: ["--vscode-button-foreground"],
@@ -37,7 +37,7 @@ export const THEME_COLORS = {
   },
   "primary-hover": {
     vars: ["--vscode-button-hoverBackground"],
-    default: "#3a6db3", // lighter blue
+    default: "#ff33aa", // lighter neon pink
   },
   "secondary-background": {
     vars: ["--vscode-button-secondaryBackground"],
@@ -57,7 +57,7 @@ export const THEME_COLORS = {
   },
   "border-focus": {
     vars: ["--vscode-focusBorder"],
-    default: "#3a6db3", // lighter blue
+    default: "#ff0099", // neon pink
   },
   // Command styles are used for tip-tap editor
   "command-background": {
@@ -74,7 +74,7 @@ export const THEME_COLORS = {
   },
   "command-border-focus": {
     vars: ["--vscode-commandCenter-activeBorder"],
-    default: "#4d8bf0", // bright blue
+    default: "#ff0099", // neon pink
   },
   description: {
     vars: ["--vscode-descriptionForeground"],

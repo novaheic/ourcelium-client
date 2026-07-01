@@ -4,14 +4,11 @@ import * as path from "path";
 import chalk from "chalk";
 import { setConfigFilePermissions } from "core/util/paths.js";
 
+import { isSignedIn, runLoginFlow } from "./auth/ourceliumAuth.js";
 import type { AuthConfig } from "./auth/workos.js";
 import { getApiClient } from "./config.js";
 import { loadConfiguration } from "./configLoader.js";
 import { env } from "./env.js";
-import {
-  getApiKeyValidationError,
-  isValidAnthropicApiKey,
-} from "./util/apiKeyValidation.js";
 import { question } from "./util/prompt.js";
 import { updateAnthropicModelInYaml } from "./util/yamlConfigUpdater.js";
 
@@ -85,21 +82,19 @@ export async function runOnboardingFlow(
     return false;
   }
 
-  // Step 4: Prompt for API key
-  console.log(chalk.yellow("To get started, enter your Anthropic API key."));
-
-  const apiKey = await question(
-    chalk.white("\nEnter your Anthropic API key: "),
-  );
-
-  if (!isValidAnthropicApiKey(apiKey)) {
-    throw new Error(getApiKeyValidationError(apiKey));
+  // Step 4: Browser sign-in (writes API key + config to CONFIG_PATH)
+  if (isSignedIn()) {
+    return false;
   }
 
-  await createOrUpdateConfig(apiKey);
-  console.log(
-    chalk.green(`✓ Config file updated successfully at ${CONFIG_PATH}`),
+  console.log(chalk.yellow("Welcome to Ourcelium! Sign in to get started."));
+  await question(
+    chalk.white("\nPress Enter to open your browser and sign in... "),
   );
+  console.log(chalk.white("Opening your browser..."));
+
+  await runLoginFlow();
+  console.log(chalk.green("✓ Logged in. You're ready to code."));
 
   return true;
 }
@@ -142,7 +137,11 @@ export async function initializeWithOnboarding(
     }
   }
 
-  if (!firstTime) return;
+  // Run onboarding on first launch OR whenever the config (with its API key)
+  // is missing — e.g. after `ourcelium logout` — otherwise configLoader falls
+  // through to the removed remote default config and chat cannot work.
+  const configMissing = !fs.existsSync(CONFIG_PATH);
+  if (!firstTime && !configMissing) return;
 
   const wasOnboarded = await runOnboardingFlow(configPath);
   if (wasOnboarded) {

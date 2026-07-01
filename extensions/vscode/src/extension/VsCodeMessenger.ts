@@ -19,6 +19,7 @@ import * as vscode from "vscode";
 
 import { ApplyManager } from "../apply";
 import { VerticalDiffManager } from "../diff/vertical/manager";
+import { isSignedIn, logOut, signIn } from "../ourceliumAuth";
 import { addCurrentSelectionToEdit } from "../quickEdit/AddCurrentSelection";
 import EditDecorationManager from "../quickEdit/EditDecorationManager";
 import { handleLLMError } from "../util/errorHandling";
@@ -370,6 +371,10 @@ export class VsCodeMessenger {
     this.onWebviewOrCore("openUrl", (msg) => {
       vscode.env.openExternal(vscode.Uri.parse(msg.data));
     });
+
+    this.onWebviewOrCore("ourceliumAuthStatus", () => isSignedIn());
+    this.onWebviewOrCore("ourceliumSignIn", async () => signIn());
+    this.onWebviewOrCore("ourceliumLogOut", () => logOut());
 
     this.onWebviewOrCore("fileExists", async (msg) => {
       return await ide.fileExists(msg.data.filepath);

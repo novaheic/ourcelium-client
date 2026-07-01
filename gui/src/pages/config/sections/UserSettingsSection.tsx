@@ -3,21 +3,54 @@ import {
   modifyAnyConfigWithSharedConfig,
 } from "core/config/sharedConfig";
 import { useContext, useEffect, useState } from "react";
-import { Card, Toggle, useFontSize } from "../../../components/ui";
+import { useNavigate } from "react-router-dom";
+import { Button, Card, Toggle, useFontSize } from "../../../components/ui";
 import { IdeMessengerContext } from "../../../context/IdeMessenger";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { updateConfig } from "../../../redux/slices/configSlice";
+import { newSession } from "../../../redux/slices/sessionSlice";
 import { setLocalStorage } from "../../../util/localStorage";
+import { ROUTES } from "../../../util/navigation";
 import { ConfigHeader } from "../components/ConfigHeader";
 import { UserSetting } from "../components/UserSetting";
 
 export function UserSettingsSection() {
   /////// User settings section //////
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const ideMessenger = useContext(IdeMessengerContext);
   const config = useAppSelector((state) => state.config.config);
 
   const [showExperimental, setShowExperimental] = useState(false);
+
+  const [signedIn, setSignedIn] = useState<boolean | null>(null);
+  const [signingIn, setSigningIn] = useState(false);
+  useEffect(() => {
+    void ideMessenger
+      .request("ourceliumAuthStatus", undefined)
+      .then((result) => {
+        setSignedIn(result.status === "success" ? result.content : false);
+      });
+  }, [ideMessenger]);
+
+  const handleLogOut = async () => {
+    await ideMessenger.request("ourceliumLogOut", undefined);
+    setSignedIn(false);
+    // Clear the current conversation and return to chat, where the sign-in
+    // banner re-checks auth on mount and reappears — same as a fresh launch
+    // with no stored key.
+    dispatch(newSession());
+    navigate(ROUTES.HOME);
+  };
+
+  const handleSignIn = async () => {
+    setSigningIn(true);
+    const result = await ideMessenger.request("ourceliumSignIn", undefined);
+    setSigningIn(false);
+    if (result.status === "success" && result.content.success) {
+      setSignedIn(true);
+    }
+  };
 
   function handleUpdate(sharedConfig: SharedConfigSchema) {
     // Optimistic update
@@ -90,6 +123,32 @@ export function UserSettingsSection() {
       <div className="flex flex-col">
         <ConfigHeader title="User Settings" />
         <div className="space-y-6">
+          {/* Account */}
+          <div>
+            <ConfigHeader title="Account" variant="sm" />
+            <Card>
+              <div className="flex items-center justify-between">
+                <span className="text-sm">
+                  {signedIn ? "Signed in to Ourcelium" : "Not signed in"}
+                </span>
+                {signedIn ? (
+                  <Button variant="outline" size="sm" onClick={handleLogOut}>
+                    Log out
+                  </Button>
+                ) : (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={signingIn}
+                    onClick={handleSignIn}
+                  >
+                    {signingIn ? "Waiting…" : "Log in"}
+                  </Button>
+                )}
+              </div>
+            </Card>
+          </div>
+
           {/* Chat Interface Settings */}
           <div>
             <ConfigHeader title="Chat" variant="sm" />

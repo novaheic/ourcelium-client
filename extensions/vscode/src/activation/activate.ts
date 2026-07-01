@@ -2,6 +2,7 @@ import { getContinueRcPath, getTsConfigPath } from "core/util/paths";
 import * as vscode from "vscode";
 
 import { VsCodeExtension } from "../extension/VsCodeExtension";
+import { signIn } from "../ourceliumAuth";
 import { isUnsupportedPlatform } from "../util/util";
 
 import { GlobalContext } from "core/util/GlobalContext";
@@ -32,6 +33,13 @@ export async function activateExtension(context: vscode.ExtensionContext) {
   setupInlineTips(context);
 
   const vscodeExtension = new VsCodeExtension(context);
+
+  // Register manual sign-in command (command palette: "Ourcelium: Sign In")
+  context.subscriptions.push(
+    vscode.commands.registerCommand("ourcelium.signIn", () => {
+      void signIn();
+    }),
+  );
 
   // Load Continue configuration
   if (!context.globalState.get("hasBeenInstalled")) {

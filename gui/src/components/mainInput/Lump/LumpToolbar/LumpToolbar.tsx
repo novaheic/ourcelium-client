@@ -1,5 +1,5 @@
 import { BuiltInToolNames } from "core/tools/builtIn";
-import { useContext, useEffect } from "react";
+import { ReactNode, useContext, useEffect } from "react";
 import { IdeMessengerContext } from "../../../../context/IdeMessenger";
 import { useAppDispatch, useAppSelector } from "../../../../redux/hooks";
 import {
@@ -13,7 +13,6 @@ import { cancelStream } from "../../../../redux/thunks/cancelStream";
 import { logToolUsage } from "../../../../redux/util";
 import { isJetBrains } from "../../../../util";
 import { useMainEditor } from "../../TipTapEditor";
-import { BlockSettingsTopToolbar } from "./BlockSettingsTopToolbar";
 import { EditOutcomeToolbar } from "./EditOutcomeToolbar";
 import { EditToolbar } from "./EditToolbar";
 import { IsApplyingToolbar } from "./IsApplyingToolbar";
@@ -168,45 +167,46 @@ export function LumpToolbar() {
     runningTerminalCalls,
   ]);
 
+  let content: ReactNode = null;
+
   if (isApplying) {
-    return <IsApplyingToolbar />;
-  }
-
-  if (isInEdit) {
-    if (editApplyState.status === "done") {
-      return <EditOutcomeToolbar />;
-    }
-
-    return <EditToolbar />;
-  }
-
-  if (ttsActive) {
-    return <TtsActiveToolbar />;
-  }
-
-  // Only show terminal streaming for actual terminal commands
-  if (hasRunningTerminalCommand) {
+    content = <IsApplyingToolbar />;
+  } else if (isInEdit) {
+    content =
+      editApplyState.status === "done" ? (
+        <EditOutcomeToolbar />
+      ) : (
+        <EditToolbar />
+      );
+  } else if (ttsActive) {
+    content = <TtsActiveToolbar />;
+  } else if (hasRunningTerminalCommand) {
+    // Only show terminal streaming for actual terminal commands
     const count = runningTerminalCalls.length;
     const stopText = `Stop Terminal${count > 1 ? ` (${count})` : ""}`;
-    return (
+    content = (
       <StreamingToolbar onStop={handleStopAction} displayText={stopText} />
     );
-  }
-
-  // Regular streaming (non-terminal)
-  if (isStreaming) {
-    return <StreamingToolbar onStop={() => dispatch(cancelStream())} />;
-  }
-
-  if (pendingToolCalls.length > 0) {
-    return <PendingToolCallToolbar />;
-  }
-
-  if (pendingApplyStates.length > 0) {
-    return (
+  } else if (isStreaming) {
+    // Regular streaming (non-terminal)
+    content = <StreamingToolbar onStop={() => dispatch(cancelStream())} />;
+  } else if (pendingToolCalls.length > 0) {
+    content = <PendingToolCallToolbar />;
+  } else if (pendingApplyStates.length > 0) {
+    content = (
       <PendingApplyStatesToolbar pendingApplyStates={pendingApplyStates} />
     );
   }
 
-  return <BlockSettingsTopToolbar />;
+  // Otherwise idle: hide the config-options bar (rules/tools/models + config
+  // selector) entirely. Rendered by BlockSettingsTopToolbar previously.
+  if (!content) {
+    return null;
+  }
+
+  return (
+    <div className="bg-input rounded-t-default border-command-border mx-1.5 border-l border-r border-t">
+      <div className="xs:px-2 px-1 py-0.5">{content}</div>
+    </div>
+  );
 }

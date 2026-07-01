@@ -1,15 +1,15 @@
 import { Box, Text } from "ink";
 import React, { useMemo } from "react";
 
-// Array of helpful tips for Continue CLI users
+// Array of helpful tips for Ourcelium CLI users
 const CONTINUE_CLI_TIPS = [
   "Use `/help` to learn keyboard shortcuts",
-  "Press escape to pause cn, and press enter to continue",
+  "Press escape to pause ourcelium, and press enter to continue",
   "Use arrow keys (↑/↓) to navigate through your input history",
   'Multi-line input is supported by typing "\\" and pressing enter',
-  "Use `cn ls` or `/resume` to resume a previous conversation",
-  'Run `cn` with the `-p` flag for headless mode. For example: `cn -p "Generate a commit message for the current changes. Output _only_ the commit message and nothing else."`',
-  "Use the /init slash command to generate an AGENTS.md file. This will help `cn` understand your codebase and generate better responses.",
+  "Use `ourcelium ls` or `/resume` to resume a previous conversation",
+  'Run `ourcelium` with the `-p` flag for headless mode. For example: `ourcelium -p "Generate a commit message for the current changes. Output _only_ the commit message and nothing else."`',
+  "Use the /init slash command to generate an AGENTS.md file. This will help `ourcelium` understand your codebase and generate better responses.",
 ];
 
 interface TipsDisplayProps {

@@ -27,6 +27,9 @@ export type ToIdeFromWebviewOrCoreProtocol = {
   showVirtualFile: [{ name: string; content: string }, void];
   openFile: [{ path: string }, void];
   openUrl: [string, void];
+  ourceliumSignIn: [undefined, { success: boolean; error?: string }];
+  ourceliumAuthStatus: [undefined, boolean];
+  ourceliumLogOut: [undefined, void];
   runCommand: [{ command: string; options?: TerminalOptions }, void];
   getSearchResults: [{ query: string; maxResults?: number }, string];
   getFileResults: [{ pattern: string; maxResults?: number }, string[]];

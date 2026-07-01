@@ -29,13 +29,28 @@ export const SYSTEM_SLASH_COMMANDS: SystemCommand[] = [
     category: "system",
   },
   {
+    name: "login",
+    description: "Sign in to Ourcelium via your browser",
+    category: "system",
+  },
+  {
+    name: "logout",
+    description: "Sign out of Ourcelium",
+    category: "system",
+  },
+  {
+    name: "usage",
+    description: "Show your token usage for this period",
+    category: "system",
+  },
+  {
     name: "clear",
     description: "Clear the chat history",
     category: "system",
   },
   {
     name: "update",
-    description: "Update the Continue CLI",
+    description: "Update the Ourcelium CLI",
     category: "system",
   },
   {

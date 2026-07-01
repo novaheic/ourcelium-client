@@ -171,9 +171,9 @@ process.on("SIGINT", async () => {
 const program = new Command();
 
 program
-  .name("cn")
+  .name("ourcelium")
   .description(
-    "Continue CLI - AI-powered development assistant. Starts an interactive session by default, use -p/--print for non-interactive output.",
+    "Ourcelium - AI-powered development assistant. Starts an interactive session by default, use -p/--print for non-interactive output.",
   )
   .version(getVersion(), "-v, --version", "Display version number");
 
@@ -238,7 +238,7 @@ addCommonOptions(program)
       ask: options.ask,
       exclude: options.exclude,
       isRootCommand: true,
-      commandName: "cn",
+      commandName: "ourcelium",
     });
 
     if (!validation.isValid) {
@@ -335,6 +335,49 @@ program
     }
 
     await serve(prompt, mergedOptions);
+  });
+
+// Login subcommand
+program
+  .command("login")
+  .description("Sign in to Ourcelium via your browser")
+  .option("--force", "Re-authenticate even if already logged in")
+  .action(async (options: { force?: boolean }) => {
+    const chalk = (await import("chalk")).default;
+    const { isSignedIn, runLoginFlow } = await import(
+      "./auth/ourceliumAuth.js"
+    );
+
+    if (isSignedIn() && !options.force) {
+      console.log(
+        chalk.green("Already logged in.") +
+          chalk.gray(" Use --force to re-authenticate."),
+      );
+      await gracefulExit(0);
+      return;
+    }
+
+    console.log(chalk.white("Opening your browser to sign in..."));
+    try {
+      await runLoginFlow();
+      console.log(chalk.green("Logged in. Run `ourcelium` to start coding."));
+      await gracefulExit(0);
+    } catch (error: any) {
+      console.error(chalk.red(`Sign-in failed: ${error.message}`));
+      await gracefulExit(1);
+    }
+  });
+
+// Logout subcommand
+program
+  .command("logout")
+  .description("Sign out of Ourcelium")
+  .action(async () => {
+    const chalk = (await import("chalk")).default;
+    const { logOut } = await import("./auth/ourceliumAuth.js");
+    logOut();
+    console.log(chalk.green("Logged out."));
+    await gracefulExit(0);
   });
 
 // Checks subcommand

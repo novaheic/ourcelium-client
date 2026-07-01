@@ -48,29 +48,29 @@ const statusBarItemText = (
   error?: boolean,
 ) => {
   if (error) {
-    return "$(alert) Continue (config error)";
+    return "$(alert) Ourcelium (config error)";
   }
 
   let text: string;
   switch (status) {
     case undefined:
       if (loading) {
-        text = "$(loading~spin) Continue";
+        text = "$(loading~spin) Ourcelium";
       } else {
-        text = "Continue";
+        text = "Ourcelium";
       }
       break;
     case StatusBarStatus.Disabled:
-      text = "$(circle-slash) Continue";
+      text = "$(circle-slash) Ourcelium";
       break;
     case StatusBarStatus.Enabled:
-      text = "$(check) Continue";
+      text = "$(check) Ourcelium";
       break;
     case StatusBarStatus.Paused:
-      text = "$(debug-pause) Continue";
+      text = "$(debug-pause) Ourcelium";
       break;
     default:
-      text = "Continue";
+      text = "Ourcelium";
   }
 
   // Append Next Edit indicator if enabled.
