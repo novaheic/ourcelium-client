@@ -16,7 +16,9 @@ export const defaultConfig: ConfigYaml = {
       // apply edits. Qwen3-235B-Instruct supports function calling on Together,
       // so declare it explicitly. ("tool_use" -> capabilities.tools = true.)
       capabilities: ["tool_use"],
-      defaultCompletionOptions: { maxTokens: 8192 },
+      // Whole-file edit_existing_file calls are token-heavy; 8192 truncated the
+      // model mid-tool-call, producing malformed JSON that poisoned sessions.
+      defaultCompletionOptions: { maxTokens: 32768 },
     },
   ],
 };
