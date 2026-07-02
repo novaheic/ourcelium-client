@@ -72,13 +72,17 @@ function waitForToken(port: number): Promise<string> {
         return;
       }
 
-      if (req.url === "/callback") {
+      // req.url includes the query string (e.g. "/callback?code=..."), so
+      // compare against the parsed pathname rather than the raw string.
+      const { pathname } = new URL(req.url ?? "", "http://localhost");
+
+      if (pathname === "/callback") {
         res.writeHead(200, { "Content-Type": "text/html" });
         res.end(callbackHtml(port));
         return;
       }
 
-      if (req.url === "/token" && req.method === "POST") {
+      if (pathname === "/token" && req.method === "POST") {
         let body = "";
         req.on("data", (c) => (body += c));
         req.on("end", () => {

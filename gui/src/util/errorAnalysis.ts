@@ -9,6 +9,14 @@ export interface ErrorAnalysis {
   apiKeyUrl?: string;
   helpUrl?: string;
   customErrorMessage?: string;
+  // Set when the Ourcelium gateway rejects a request because the usage cap was
+  // reached. `kind` distinguishes a free user (should upgrade) from a paid user
+  // out of credits (should buy more), derived from the gateway's action_url.
+  usageLimit?: {
+    kind: "upgrade" | "topup";
+    actionUrl?: string;
+    resetAt?: string;
+  };
 }
 
 function parseErrorMessage(fullErrMsg: string): string {
@@ -164,6 +172,27 @@ export function analyzeError(
     customErrorMessage = `Your ${providerLabel} account appears to be out of credits. Add more credits to your account to continue using this model.`;
   }
 
+  // Ourcelium usage cap: gateway returns 429 { error: "usage_limit_reached",
+  // reset_at, cta, action_url }. `cta` ("upgrade" for a free user, "topup" for
+  // a paid user out of credits) drives the button label; action_url is the
+  // link. The body can be embedded in the thrown message in a few shapes, so
+  // pull the fields out with a format-agnostic regex rather than assuming a
+  // specific JSON wrapper.
+  let usageLimit: ErrorAnalysis["usageLimit"] = undefined;
+  if (errorText.includes("usage_limit_reached")) {
+    const raw = `${message ?? ""} ${parsedError}`;
+    const cta = raw.match(/"?cta"?\s*:\s*"([^"]+)"/)?.[1];
+    const actionUrl = raw.match(/"?action_url"?\s*:\s*"([^"]+)"/)?.[1];
+    const resetAt = raw.match(/"?reset_at"?\s*:\s*"([^"]+)"/)?.[1];
+    usageLimit = {
+      kind: cta === "topup" ? "topup" : "upgrade",
+      // Default to the dashboard so the button always does something even if
+      // the URL couldn't be recovered from the error text.
+      actionUrl: actionUrl ?? "https://ourcelium.dev/dashboard",
+      resetAt,
+    };
+  }
+
   return {
     parsedError,
     statusCode,
@@ -173,5 +202,6 @@ export function analyzeError(
     apiKeyUrl,
     helpUrl,
     customErrorMessage,
+    usageLimit,
   };
 }

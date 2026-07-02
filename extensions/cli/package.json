@@ -1,6 +1,6 @@
 {
   "name": "@ourcelium/cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Ourcelium CLI",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -35,16 +35,16 @@
     "semantic-release": "semantic-release",
     "semantic-release:dry-run": "semantic-release --dry-run"
   },
-  "author": "Continue Dev, Inc.",
+  "author": "Ourcelium",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/continuedev/continue.git"
+    "url": "https://github.com/novaheic/ourcelium-client.git"
   },
   "bugs": {
-    "url": "https://github.com/continuedev/continue/issues"
+    "url": "https://github.com/novaheic/ourcelium-client/issues"
   },
-  "homepage": "https://continue.dev",
+  "homepage": "https://ourcelium.dev",
   "dependencies": {
     "fdir": "^6.4.2",
     "find-up": "^8.0.0",

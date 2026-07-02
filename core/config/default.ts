@@ -11,6 +11,11 @@ export const defaultConfig: ConfigYaml = {
       model: "Qwen/Qwen3-235B-A22B-Instruct-2507-tput",
       apiBase: "https://api.ourcelium.dev/v1",
       roles: ["chat", "edit", "apply"],
+      // The model string ("Qwen/...") isn't in PROVIDER_TOOL_SUPPORT's openai
+      // matcher, so tool support is auto-detected as false and the agent can't
+      // apply edits. Qwen3-235B-Instruct supports function calling on Together,
+      // so declare it explicitly. ("tool_use" -> capabilities.tools = true.)
+      capabilities: ["tool_use"],
       defaultCompletionOptions: { maxTokens: 8192 },
     },
   ],

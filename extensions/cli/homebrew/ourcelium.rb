@@ -1,6 +1,6 @@
 # Homebrew formula for the Ourcelium CLI.
 #
-# Canonical home: the tap repo `ourcelium/homebrew-ourcelium` (this file goes in
+# Canonical home: the tap repo `novaheic/homebrew-ourcelium` (this file goes in
 # its `Formula/` directory). A copy is kept here in the client repo so the
 # formula is version-controlled alongside the code it installs.
 #
@@ -12,8 +12,8 @@
 class Ourcelium < Formula
   desc "Plug-and-play AI coding assistant powered by open models"
   homepage "https://ourcelium.dev"
-  url "https://registry.npmjs.org/@ourcelium/cli/-/cli-0.0.0.tgz"
-  sha256 "0000000000000000000000000000000000000000000000000000000000000000"
+  url "https://registry.npmjs.org/@ourcelium/cli/-/cli-0.1.1.tgz"
+  sha256 "cdea9983f5e4639d4345f32c7224c77c1dc633beabc01e05ea5178a74fab1890"
   license "Apache-2.0"
 
   depends_on "node"
@@ -24,6 +24,6 @@ class Ourcelium < Formula
   end
 
   test do
-    assert_match "ourcelium", shell_output("#{bin}/ourcelium --version 2>&1")
+    assert_match version.to_s, shell_output("#{bin}/ourcelium --version 2>&1")
   end
 end

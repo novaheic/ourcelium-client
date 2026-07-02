@@ -374,7 +374,15 @@ export class VsCodeMessenger {
 
     this.onWebviewOrCore("ourceliumAuthStatus", () => isSignedIn());
     this.onWebviewOrCore("ourceliumSignIn", async () => signIn());
-    this.onWebviewOrCore("ourceliumLogOut", () => logOut());
+    this.onWebviewOrCore("ourceliumLogOut", async () => {
+      logOut();
+      // Deleting config.yaml doesn't reliably trigger the fs.watchFile-based
+      // reload (a deleted file reports size 0, same as the watcher's
+      // ignore-empty-write guard), so core would otherwise keep the old
+      // API key loaded in memory after logout. Force a reload here instead.
+      const configHandler = await configHandlerPromise;
+      await configHandler.reloadConfig("Ourcelium log out");
+    });
 
     this.onWebviewOrCore("fileExists", async (msg) => {
       return await ide.fileExists(msg.data.filepath);

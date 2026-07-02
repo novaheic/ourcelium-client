@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { vscButtonBackground, vscButtonForeground } from ".";
 import { IdeMessengerContext } from "../context/IdeMessenger";
+import { useAppSelector } from "../redux/hooks";
 import { varWithFallback } from "../styles/theme";
 
 export function OurceliumSignInBanner() {
@@ -9,13 +10,18 @@ export function OurceliumSignInBanner() {
   const [signingIn, setSigningIn] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Every sign-in/out path (this banner, settings, the stream-error dialog)
+  // reloads the config, so re-check auth whenever config changes — that way a
+  // sign-in triggered elsewhere makes this banner disappear without a reload.
+  const config = useAppSelector((state) => state.config.config);
+
   useEffect(() => {
     void ideMessenger
       .request("ourceliumAuthStatus", undefined)
       .then((result) => {
         setSignedIn(result.status === "success" ? result.content : false);
       });
-  }, [ideMessenger]);
+  }, [ideMessenger, config]);
 
   if (signedIn === null || signedIn) {
     return null;

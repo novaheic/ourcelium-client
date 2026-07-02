@@ -1,11 +1,12 @@
 import {
   ArrowPathIcon,
+  ArrowRightEndOnRectangleIcon,
   ArrowTopRightOnSquareIcon,
   ClipboardIcon,
   Cog6ToothIcon,
   KeyIcon,
 } from "@heroicons/react/24/outline";
-import { useContext, useMemo } from "react";
+import { useContext, useMemo, useState } from "react";
 
 import { GhostButton } from "../../components";
 import { useEditModel } from "../../components/mainInput/Lump/useEditBlock";
@@ -39,12 +40,38 @@ const StreamErrorDialog = ({ error }: StreamErrorProps) => {
     apiKeyUrl,
     helpUrl,
     customErrorMessage,
+    usageLimit,
   } = useMemo(() => analyzeError(error, selectedModel), [error, selectedModel]);
 
   const handleRefreshProfiles = () => {
     void refreshProfiles("Clicked reload config from stream error dialog");
     dispatch(setShowDialog(false));
     dispatch(setDialogMessage(undefined));
+  };
+
+  // A 401 from our gateway means the stored key is gone/invalid — i.e. the user
+  // is signed out. Surface the sign-in flow directly instead of the generic
+  // "invalid API key" provider troubleshooting.
+  const [signingIn, setSigningIn] = useState(false);
+  const [signInError, setSignInError] = useState<string | null>(null);
+
+  const handleSignIn = async () => {
+    setSigningIn(true);
+    setSignInError(null);
+    const result = await ideMessenger.request("ourceliumSignIn", undefined);
+    setSigningIn(false);
+    if (result.status === "success" && result.content.success) {
+      // Pick up the freshly written key and dismiss the dialog.
+      void refreshProfiles("Signed in from stream error dialog");
+      dispatch(setShowDialog(false));
+      dispatch(setDialogMessage(undefined));
+    } else {
+      setSignInError(
+        result.status === "success"
+          ? (result.content.error ?? "Sign-in failed")
+          : result.error,
+      );
+    }
   };
 
   const copyErrorToClipboard = () => {
@@ -176,13 +203,22 @@ const StreamErrorDialog = ({ error }: StreamErrorProps) => {
     );
   }
 
-  if (statusCode === 401) {
+  const isSignedOut = statusCode === 401;
+
+  if (isSignedOut) {
     errorContent = (
       <div className="flex flex-col gap-2">
-        <span>{`It's possible that your API key is invalid.`}</span>
-        <div className="flex flex-row flex-wrap gap-2">
-          {checkKeysButton}
-          {configButton}
+        <span>You've been signed out. Sign in to keep chatting.</span>
+        {signInError && <span className="text-error">{signInError}</span>}
+        <div className="flex flex-row flex-wrap gap-2 pt-1">
+          <GhostButton
+            className="flex items-center"
+            onClick={() => void handleSignIn()}
+            disabled={signingIn}
+          >
+            <ArrowRightEndOnRectangleIcon className="mr-1.5 h-3.5 w-3.5" />
+            <span>{signingIn ? "Waiting for sign-in…" : "Log in"}</span>
+          </GhostButton>
         </div>
       </div>
     );
@@ -248,17 +284,64 @@ const StreamErrorDialog = ({ error }: StreamErrorProps) => {
     );
   }
 
+  // Ourcelium usage cap reached (429 usage_limit_reached). Overrides the generic
+  // 429 "rate limited" content above with an actionable upgrade / top-up prompt.
+  if (usageLimit) {
+    const isUpgrade = usageLimit.kind === "upgrade";
+    errorContent = (
+      <div className="flex flex-col gap-2">
+        <span>
+          {isUpgrade
+            ? "You've used all the tokens included in your free plan for this period."
+            : "You've used all your included tokens and your credit balance is empty."}
+        </span>
+        {usageLimit.resetAt && (
+          <span className="text-description text-xs">
+            {`Your usage resets on ${new Date(
+              usageLimit.resetAt,
+            ).toLocaleDateString()}.`}
+          </span>
+        )}
+        <div className="flex flex-row flex-wrap gap-2 pt-1">
+          <GhostButton
+            className="flex items-center"
+            onClick={() =>
+              usageLimit.actionUrl &&
+              ideMessenger.ide.openUrl(usageLimit.actionUrl)
+            }
+          >
+            <ArrowTopRightOnSquareIcon className="mr-1.5 h-3.5 w-3.5" />
+            <span>{isUpgrade ? "Upgrade to Pro" : "Buy more tokens"}</span>
+          </GhostButton>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-4 px-3 pb-3 pt-3">
-      {/* Concise error title */}
-      <h3 className="text-error m-0 p-0 text-lg font-medium">
-        Error handling model response
+      {/* Concise error title. A signed-out (401) or usage-cap (429) state is an
+          expected condition, not a crash — drop the alarming error styling and
+          wording, and give it an actionable title. */}
+      <h3
+        className={`m-0 p-0 text-lg font-medium ${
+          isSignedOut || usageLimit ? "" : "text-error"
+        }`}
+      >
+        {isSignedOut
+          ? "Sign in to continue"
+          : usageLimit
+            ? usageLimit.kind === "upgrade"
+              ? "You've hit your free limit"
+              : "You're out of tokens"
+            : "Error handling model response"}
       </h3>
 
       {errorContent}
 
-      {/* Expandable technical details using ToggleDiv */}
-      {message && (
+      {/* Expandable technical details using ToggleDiv (hidden for the expected
+          signed-out / usage-cap states — the raw HTTP error is just noise there) */}
+      {message && !isSignedOut && !usageLimit && (
         <div className="mb-2">
           <ToggleDiv
             title="View error output"
