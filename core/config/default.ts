@@ -19,6 +19,15 @@ export const defaultConfig: ConfigYaml = {
       // Whole-file edit_existing_file calls are token-heavy; 8192 truncated the
       // model mid-tool-call, producing malformed JSON that poisoned sessions.
       defaultCompletionOptions: { maxTokens: 32768 },
+      // edit_existing_file relies on a model-based "apply" step to merge lazy
+      // edits; Qwen3 is unreliable at it (echoes the file back unchanged).
+      // Disable it so the agent uses single_find_and_replace / multi_edit,
+      // which apply deterministically via instantApplyDiff (no apply model).
+      chatOptions: {
+        toolOverrides: {
+          edit_existing_file: { disabled: true },
+        },
+      },
     },
   ],
 };
