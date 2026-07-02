@@ -6,7 +6,9 @@ export const lightGray = "#999998";
 export const greenButtonColor = "#189e72";
 
 export const vscInputBackground = varWithFallback("input-background");
-export const vscQuickInputBackground = varWithFallback("input-background");
+// Opaque background for floating menus/dropdowns (see "dropdown-background" in theme.ts)
+export const vscDropdownBackground = varWithFallback("dropdown-background");
+export const vscQuickInputBackground = varWithFallback("dropdown-background");
 export const vscBackground = varWithFallback("background");
 export const vscForeground = varWithFallback("foreground");
 export const vscButtonBackground = varWithFallback("primary-background");

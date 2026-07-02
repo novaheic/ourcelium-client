@@ -1,3 +1,10 @@
+/* Keep long unbroken tokens (URLs, file paths) from forcing the input box
+   wider than the extension panel — wrap them instead. */
+.tiptap.ProseMirror {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 .mention {
   background-color: var(--vscode-badge-background, #bfe2b6);
   color: var(--vscode-badge-foreground, --vscode-foreground, #000);

@@ -74,6 +74,9 @@ module.exports = {
           border: varWithFallback("input-border"),
           placeholder: varWithFallback("input-placeholder"),
         },
+        dropdown: {
+          DEFAULT: varWithFallback("dropdown-background"),
+        },
         table: {
           oddRow: varWithFallback("table-oddRow"),
         },

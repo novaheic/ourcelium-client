@@ -88,6 +88,19 @@ export const THEME_COLORS = {
     vars: ["--vscode-input-background"],
     default: "#2d2d2d", // dark gray
   },
+  // Opaque background for floating menus/dropdowns. VS Code's input-background
+  // is translucent in many themes, which looks wrong for overlays, so prefer
+  // the dedicated (opaque) dropdown/menu tokens and fall back to the editor bg.
+  "dropdown-background": {
+    vars: [
+      "--vscode-dropdown-background",
+      "--vscode-menu-background",
+      "--vscode-quickInput-background",
+      "--vscode-editorWidget-background",
+      "--vscode-editor-background",
+    ],
+    default: "#2d2d2d", // dark gray
+  },
   "input-foreground": {
     vars: ["--vscode-input-foreground"],
     default: "#e6e6e6", // light gray
