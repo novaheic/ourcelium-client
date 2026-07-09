@@ -12,6 +12,7 @@ import {
 } from "@continuedev/config-yaml";
 import { DefaultApiInterface } from "@continuedev/sdk/dist/api/dist/index.js";
 import chalk from "chalk";
+import { migrateOurceliumConfig } from "core/config/migrateOurceliumConfig.js";
 
 import { uriToPath, uriToSlug } from "./auth/uriUtils.js";
 import type { AuthConfig } from "./auth/workos.js";
@@ -311,6 +312,8 @@ async function loadLocalConfigYaml(
   injectBlocks: PackageIdentifier[],
 ): Promise<AssistantUnrolled> {
   const defaultConfigPath = path.join(env.continueHome, "config.yaml");
+  // An existing config is never otherwise reconciled against the defaults.
+  migrateOurceliumConfig(defaultConfigPath);
   return await loadConfigYaml(
     defaultConfigPath,
     accessToken,

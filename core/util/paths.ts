@@ -10,6 +10,7 @@ import dotenv from "dotenv";
 
 import { IdeType, SerializedContinueConfig } from "../";
 import { defaultConfig } from "../config/default";
+import { migrateOurceliumConfig } from "../config/migrateOurceliumConfig";
 import Types from "../config/types";
 
 dotenv.config();
@@ -125,6 +126,9 @@ export function getConfigYamlPath(ideType?: IdeType): string {
   if (needsCreation || isEmpty) {
     fs.writeFileSync(p, YAML.stringify(defaultConfig));
     setConfigFilePermissions(p);
+  } else {
+    // An existing config is never otherwise reconciled against defaultConfig.
+    migrateOurceliumConfig(p);
   }
   return p;
 }

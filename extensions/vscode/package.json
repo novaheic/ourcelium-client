@@ -2,7 +2,7 @@
   "name": "ourcelium",
   "icon": "media/icon.png",
   "author": "Ourcelium",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/novaheic/ourcelium-client"
