@@ -12,8 +12,8 @@
 class Ourcelium < Formula
   desc "Plug-and-play AI coding assistant powered by open models"
   homepage "https://ourcelium.dev"
-  url "https://registry.npmjs.org/@ourcelium/cli/-/cli-0.1.2.tgz"
-  sha256 "5fc6b83a11c96802ef9dd30d3221102022a4b3168e8d6fb86e1e6ec7fe46119a"
+  url "https://registry.npmjs.org/@ourcelium/cli/-/cli-0.1.3.tgz"
+  sha256 "62658b85097258e9f75ed224032103dcf8b2f7478b4f099f5e1cdf1c757e4ffb"
   license "Apache-2.0"
 
   depends_on "node"
