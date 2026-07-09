@@ -9,7 +9,7 @@ Ourcelium is a plug-and-play AI coding assistant. Sign in once and start coding:
 Most ways of coding with open models are bring-your-own-API: sign up with a provider, generate a key, paste it into a config, pick a model, tune the settings. Ourcelium removes all of that. Click **Sign in**, authenticate in your browser, and you're coding — the free tier doesn't even ask for a credit card.
 
 - **Zero setup** — sign in with GitHub, Google, or email and everything is configured automatically
-- **Open models** — currently Qwen3 235B, one of the strongest open-weight coding models available
+- **Open models** — currently MiniMax M3, a frontier open-weight coding and agentic model
 - **Honest pricing** — a generous free tier, and a flat $10/month when you need more
 - **A great fallback** — out of usage on your primary assistant mid-task? Ourcelium is a cheap, capable second lane that's always ready
 

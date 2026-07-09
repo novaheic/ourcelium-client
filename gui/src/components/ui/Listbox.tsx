@@ -5,7 +5,12 @@ import {
   Listbox,
 } from "@headlessui/react";
 import * as React from "react";
-import { defaultBorderRadius, vscCommandCenterInactiveBorder } from "..";
+import {
+  defaultBorderRadius,
+  vscCommandCenterInactiveBorder,
+  vscDropdownBackground,
+  vscEditorBackground,
+} from "..";
 import { cn } from "../../util/cn";
 import { FontSizeModifier, useFontSize } from "./font";
 
@@ -46,10 +51,15 @@ const ListboxOptions = React.forwardRef<HTMLUListElement, ListboxOptionsProps>(
         anchor={"bottom start"}
         {...props}
         className={cn(
-          "bg-dropdown flex w-max min-w-[160px] max-w-[400px] flex-col overflow-auto px-0 shadow-md",
+          "flex w-max min-w-[160px] max-w-[400px] flex-col overflow-auto px-0 shadow-md",
           props.className,
         )}
         style={{
+          // Some VS Code themes give dropdown/menu tokens an alpha channel, so
+          // painting them alone lets the editor show through. Composite the
+          // dropdown color over an opaque editor background instead.
+          backgroundColor: vscEditorBackground,
+          backgroundImage: `linear-gradient(${vscDropdownBackground}, ${vscDropdownBackground})`,
           border: `1px solid ${vscCommandCenterInactiveBorder}`,
           fontSize,
           borderRadius: defaultBorderRadius,

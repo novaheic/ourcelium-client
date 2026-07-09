@@ -3,14 +3,11 @@ import {
   ChevronDownIcon,
   Cog6ToothIcon,
   CubeIcon,
-  PlusIcon,
 } from "@heroicons/react/24/outline";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/Auth";
-import { AddModelForm } from "../../forms/AddModelForm";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { setDialogMessage, setShowDialog } from "../../redux/slices/uiSlice";
 import { updateSelectedModelByRole } from "../../redux/thunks/updateSelectedModelByRole";
 import { getMetaKeyLabel, isMetaEquivalentKeyPressed } from "../../util";
 import { CONFIG_ROUTES } from "../../util/navigation";
@@ -203,24 +200,6 @@ function ModelSelect() {
     };
   }, [options, selectedModel]);
 
-  function onClickAddModel(e: MouseEvent) {
-    e.stopPropagation();
-    e.preventDefault();
-
-    closeDropDown(buttonRef.current);
-
-    dispatch(setShowDialog(true));
-    dispatch(
-      setDialogMessage(
-        <AddModelForm
-          onDone={() => {
-            dispatch(setShowDialog(false));
-          }}
-        />,
-      ),
-    );
-  }
-
   function onClickConfigureModels(e: React.MouseEvent) {
     e.stopPropagation();
     e.preventDefault();
@@ -302,20 +281,6 @@ function ModelSelect() {
 
           {!isConfigLoading && (
             <>
-              <Divider className="!mb-0" />
-              <ListboxOption
-                key={options.length}
-                onClick={onClickAddModel}
-                value={"addModel" as any}
-                fontSizeModifier={-2}
-                className="px-2 py-2"
-              >
-                <span className="text-description text-2xs flex flex-row items-center">
-                  <PlusIcon className="mr-1.5 h-3.5 w-3.5" />
-                  Add Chat model
-                </span>
-              </ListboxOption>
-
               <Divider className="!my-0" />
               <div className="text-description flex items-center justify-start p-2">
                 <span className="block" style={{ fontSize: tinyFont }}>

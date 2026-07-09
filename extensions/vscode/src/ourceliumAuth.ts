@@ -139,17 +139,20 @@ function writeConfig(apiKey: string): void {
 version: "1.0.0"
 schema: v1
 models:
-  - name: Qwen3 235B
+  - name: MiniMax M3
     provider: openai
-    model: Qwen/Qwen3-235B-A22B-Instruct-2507-tput
+    model: MiniMaxAI/MiniMax-M3
     apiBase: ${GATEWAY_URL}/v1
     apiKey: ${apiKey}
     roles:
       - chat
       - edit
       - apply
+    capabilities:
+      - tool_use
+    contextLength: 524288
     defaultCompletionOptions:
-      maxTokens: 8192
+      maxTokens: 32768
 `;
   fs.writeFileSync(CONFIG_YAML_PATH, yaml, "utf8");
 }
